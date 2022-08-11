@@ -7,6 +7,113 @@ const router = express.Router();
 
 
 
+// Write a POST /players api that saves a player’s details and doesn’t allow saving the data of a player with a name that already exists in the data
+
+
+let players =[
+  {
+      "name": "rohit",
+      "dob": "1/1/1995",
+      "gender": "male",
+      "city": "jalandhar",
+      "sports": [
+      "swimming"
+        ]
+  },
+
+  {
+    "name": "kohli",
+    "dob": "1/09/1995",
+    "gender": "male",
+    "city": "delhi",
+    "sports": [
+      "batsman"
+    ]
+},
+  {
+    "name": "lokesh",
+    "dob": "1/1/1990",
+    "gender": "male",
+    "city": "kolkata",
+    "sports": [
+      "soccer"
+    ]
+  }]
+
+router.post("/players",function(req,res){
+  
+  let newPlayer = req.body;
+  let newPlayerName= newPlayer.name
+  // let existance = false;
+  for(i=0;i<players.length;i++){
+    if(players[i].name===newPlayerName)
+      {
+        return res.send("This player was already added!")
+      }}
+      players.push(newPlayer);
+      res.send({players});
+})
+//Write an api that books a slot for a player with relevant details
+
+
+let booking = [
+  {
+      name: "kohli",
+      bookingNumber: "1",
+      bookingId: "11",
+      sportId: "",
+      centerId: "",
+      type: "private",
+      slot: "16286598000000",
+      bookedOn: "31/08/2021",
+      bookedFor: "01/09/2021",
+  },
+  {
+    name: "rohit",
+    bookingNumber: "1",
+    bookingId: "10",
+    sportId: "",
+    centerId: "",
+    type: "private",
+    slot: "16286598000000",
+    bookedOn: "31/08/2021",
+    bookedFor: "01/09/2021",
+},
+{
+  name: "malkova",
+  bookingNumber: "1",
+  bookingId: "12",
+  sportId: "",
+  centerId: "",
+  type: "private",
+  slot: "16286598000000",
+  bookedOn: "31/08/2021",
+  bookedFor: "01/09/2021",
+}
+
+];
+
+router.post("/players/:playerName/bookings/:bookingId", function (req, res) {
+let playerName = req.params.playerName;
+let bookingId=req.params.bookingId
+let data =req.body
+// console.log(playerName)
+let exist = false;
+for(let i=0;i<booking.length;i++){
+
+ if(booking[i].name===playerName && booking[i].bookingId===bookingId){
+    exist = true;
+    res.send("booking was already processed")
+  }
+  else if(booking[i].name===playerName && booking[i].bookingId!==bookingId){
+    exist = true;
+    booking.push(data)
+    res.send(booking)
+  }
+}
+
+if(!exist) res.send("playerName doesn't exist");
+})
 
 //voting assignment
 let persons =[
