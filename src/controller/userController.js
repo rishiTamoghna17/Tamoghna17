@@ -6,7 +6,7 @@ let createUser = async function(req,res){
 
    
         let createUser = await userModel.create(data)
-         res.send({status:true,message:success,data:createUser})
+         res.send({status:true,message:"success",data:createUser})
     
 
 }
