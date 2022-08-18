@@ -36,7 +36,7 @@ const updatedBook = async function (req, res){
 //Find the books which costs between 50-100(50,100 inclusive) and respond back with the author names of respective books..
 const bookrange = async function (req, res){
 let range = await BookModel.find({price:{$gte:50,$lte:100}})
-let x= range.map(x=>x.author_id)[1,2,4,6,]
+let x= range.map(x=>x.author_id)
 let newbook = await AuthorModel.find({author_id:x}).select({author_name :1,_id:0})
 res.send({newbook})
 }
