@@ -5,47 +5,55 @@ const bookModel= require("../models/bookModel")
 
 const createBook= async function (req, res) {
     let book = req.body
-    let Author = await authorModel.find().select({_id: 1})
-    let validAuthorId = Author[0]._id.toString()
-    let publisher = await publisherModel.find().select({_id: 1})
-    let validPublisherId = publisher[0]._id.toString()
-
-    if(!book.author_id){
-       return res.send({msg:"author_id detail is required"})
+    //3 a)
+    if(!book.author) {
+        return res.send({status: false, msg: "author id is a mandatory field"})
     }
-    if(!book.publisher_id){
-       return res.send({msg:"publisher_id detail is required"})
-    }
-    if(validPublisherId === book.publisher_id && validAuthorId === book.author_id ){
-        let bookCreated = await bookModel.create(book)
-        return res.send({data: bookCreated})
-    }
-     if(validAuthorId!==book.author_id && validPublisherId!== book.publisher_id){
-        return res.send({msg:"both author_id and publisher_id should valid"})
-     }
-    if(validAuthorId !== book.author_id){
-        return res.send({msg:"valid author_id is required"})
-    }
-    
 
+    //3 b)
+    let author = await authorModel.findById(book.author)
+    if(!author) {
+        return res.send({status: false, msg: "Author id is not valid"})
+    }
 
-    if(validPublisherId !== book.publisher_id ){
-        return res.send({msg:"valid publisher_id is required"})
-        }
+    //3 c)
+    if(!book.publisher) {
+        return res.send({status: false, msg: "Publisher id is a mandatory field"})
+    }
 
+    // 3 d)
+    let publisher = await publisherModel.findById(book.publisher)
+    if(!publisher) {
+        return res.send({status: false, msg: "Publisher id is not valid"})
+    }
+
+    let bookCreated = await bookModel.create(book)
+    res.send({data: bookCreated})
+}
+
+const getAllBooksWithCompleteDetails = async function (req, res) {
+    let allBooks = await bookModel.find().populate('author publisher')
+    res.send({data: allBooks})
 
 }
 
-    
+const updateSpecificBooks = async function(req, res) {
+    //a)
+    // get books by the publioshers - Penguin and HarperCollins
+    let requiredPublishers = 
+    await publisherModel.find({$or: [{name: "Penguin"},{name: "HarperCollins"}]}, {_id: 1})
+    //let books = await bookModel.find().populate('publisher')
+    //for
+    let requiredPublisherIds = [] 
+    for (let i = 0; i < requiredPublishers.length; i++) {
+        requiredPublisherIds.push(requiredPublishers[i]._id)
+    }
 
-    
-
-
-const getBooksWithAuthorDetails = async function (req, res) {
-    let specificBook = await bookModel.find().populate('author_id')
-    res.send({data: specificBook})
-
+    let updatedBooks = await bookModel.updateMany({publisher : {$in: requiredPublisherIds}}, {isHardCover: true}, {new: true})
+    res.send({data: updatedBooks})
 }
 
 module.exports.createBook= createBook
-module.exports.getBooksWithAuthorDetails = getBooksWithAuthorDetails
+module.exports.getAllBooksWithCompleteDetails = getAllBooksWithCompleteDetails
+module.exports.updateSpecificBooks = updateSpecificBooks
+
