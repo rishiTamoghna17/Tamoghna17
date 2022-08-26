@@ -1,26 +1,14 @@
 
-const mid1= function ( req, res, next) {
-    req.falana= "hi there. i am adding something new to the req object"
-    console.log("Hi I am a middleware named Mid1")
+const headerCheck= function ( req, res, next) {
+    let header = req.headers
+    // console.log(typeof(header))
+    if(!header.hasOwnProperty("isfreeappuser")){
+    return res.send("the request is missing a mandatory header")
+    }
+    else{
     next()
+    }
 }
 
-const mid2= function ( req, res, next) {
-    console.log("Hi I am a middleware named Mid2")
-    next()
-}
+module.exports.headerCheck= headerCheck
 
-const mid3= function ( req, res, next) {
-    console.log("Hi I am a middleware named Mid3")
-    next()
-}
-
-const mid4= function ( req, res, next) {
-    console.log("Hi I am a middleware named Mid4")
-    next()
-}
-
-module.exports.mid1= mid1
-module.exports.mid2= mid2
-module.exports.mid3= mid3
-module.exports.mid4= mid4
