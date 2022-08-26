@@ -8,19 +8,21 @@ const createOrder= async function (req, res) {
     let data= req.body
     
     let header = req.headers.isfreeappuser
-    console.log(header)
+    //console.log(header)
     let userExist = await userModel.findById(data.user)
     if(!userExist) {
         return res.send({status: false, msg: "user id is not valid"})
     }
-    let balance = userExist.balance;
     // console.log(balance)
-
+    
     let productExist = await productModel.findById(data.product)
     if(!productExist) {
         return res.send({status: false, msg: "product id is not valid"})
     }
-    let price = productExist.price
+
+    let balance = userExist.balance;//user balance
+    let price = productExist.price//product price
+    let totalPrice = (price * data.amount);// total price 
     if(header==="true")
     {
         data.amount = 0;
@@ -29,13 +31,22 @@ const createOrder= async function (req, res) {
         return res.send(savedData)
 
     }
-    else{
-        let user = await userModel.findOneAndUpdate({_id:data.user},{balance:balance-price})
-        data.amount =price
-        let savedData = await orderModel.create(data)
-       return res.send(savedData)
-
+    if(header==="false" && totalPrice<balance)
+    {
+        let user = await userModel.findOneAndUpdate({_id:data.user},{balance:balance-price},{ new: true})
+        return res.send({data: user})
     }
+    if(header==="false" && totalPrice>balance)
+    {
+        return res.send("the user doesn't have enough balance")
+    }
+    // else{
+    //     // let user = await userModel.findOneAndUpdate({_id:data.user},{balance:balance-price})
+    //     // data.amount =price
+    //     // let savedData = await orderModel.create(data)
+    //     // return res.send(savedData)
+
+    // }
 
 
     
