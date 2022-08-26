@@ -2,7 +2,7 @@
 const newMid = function (req,res,next){
     let date = new Date();
 
-    console.log(`${date}, ${req.socket.localAddress}`)
+    console.log(`${date}, ${req.socket.localAddress},${req.originalUrl}`)
     next();
 
 }
