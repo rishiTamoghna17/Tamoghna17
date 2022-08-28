@@ -23,6 +23,7 @@ const createOrder= async function (req, res) {
     let balance = userExist.balance;//user balance
     let price = productExist.price//product price
     let totalPrice = (price * data.amount);// total price 
+    let finalBalance = (balance-price)
     if(header==="true")
     {
         data.amount = 0;
@@ -33,7 +34,7 @@ const createOrder= async function (req, res) {
     }
     if(header==="false" && totalPrice<balance)
     {
-        let user = await userModel.findOneAndUpdate({_id:data.user},{balance:balance-price},{ new: true})
+        let user = await userModel.findOneAndUpdate({_id:data.user},{balance:finalBalance},{ new: true})
         return res.send({data: user})
     }
     if(header==="false" && totalPrice>balance)
