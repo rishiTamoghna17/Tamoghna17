@@ -4,7 +4,6 @@ const userModel = require("../models/userModel");
 const createUser = async function (req, res) {
   let data =req.body;
   let savedData = await userModel.create(data);
-  console.log(req.newAtribute);
   res.send({ msg: savedData });
 };
 
@@ -57,7 +56,6 @@ const isDelete = async function(req,res){
   let user = await userModel.findById(userId);
   if (!user) {
     return res.send("No such user exists");
-    let userData = req.body;
   }
   let del = await userModel.findOneAndUpdate({ _id: userId },isDelete=true,{
     new: true})

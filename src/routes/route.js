@@ -11,9 +11,9 @@ router.post("/users", userController.createUser  )
 
 router.post("/login", userController.loginUser)
 
-router.get("/users/:userId", auth.setHeader,userController.getUserData)
+router.get("/users/:userId", auth.authenticate,auth.authorise,userController.getUserData)
 
-router.put("/users/:userId",auth.setHeader,userController.updateUser)
-router.put("/users/:userId",auth.setHeader,userController.isDelete)
+router.put("/users/:userId",auth.authenticate,auth.authorise,userController.updateUser)
+router.delete("/users/:userId",auth.authenticate,auth.authorise,userController.isDelete)
 
 module.exports = router;
