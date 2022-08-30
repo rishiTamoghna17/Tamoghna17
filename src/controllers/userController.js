@@ -57,8 +57,9 @@ const isDelete = async function(req,res){
   if (!user) {
     return res.send("No such user exists");
   }
-  let del = await userModel.findOneAndUpdate({ _id: userId },isDelete=true,{
+  let delUser = await userModel.findOneAndUpdate({ _id: userId },{isDeleted:true},{
     new: true})
+    res.send( {status: true, data: delUser});
 }
 
 module.exports.createUser = createUser;
