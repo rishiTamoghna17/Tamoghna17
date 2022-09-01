@@ -4,10 +4,10 @@ const createUser = async function (req, res) {
   try {
     let data = req.body;
     let savedData = await userModel.create(data);
-    res.send({ msg: savedData });
+    res.status(201).send({ msg: savedData });
   } catch (err) {
     console.log(err.message);
-    res.status(201).send(err.message);
+    res.status(403).send(err.message);
   }
 };
 

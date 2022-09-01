@@ -4,13 +4,13 @@ const authenticate = function (req, res, next) {
     let token = req.headers["x-auth-token"];
     if (!token)
       return res.status(401).send({ status: false, msg: "token must be present" });
-    if (!decodedToken) {
-      return res.status(401).send({ status: false, msg: "token is invalid" });
-    }
     let decodedToken = jwt.verify(
       token,
       "functionup-plutonium-very-very-secret-key"
     );
+    if (!decodedToken) {
+      return res.status(401).send({ status: false, msg: "token is invalid" });
+    }
     next();
   } catch (err) {
     console.log(err.message);
